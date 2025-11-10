@@ -1,0 +1,949 @@
+﻿<!doctype html>
+<html lang="tr">
+<head>
+    <!-- Required metadata tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Bir Arada Sergisi - Sanat Galerisi">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a4c7a 0%, #2d5a8b 50%, #3d6ba3 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: #063965;
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: #06396588;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo img {
+            height: 55px;
+            width: auto;
+            filter: brightness(0) invert(1);
+            transition: all 0.3s ease;
+        }
+
+        .logo img:hover {
+            filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a:hover {
+            color: #ff6b9d;
+        }
+
+        /* Language Switcher */
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Hide mobile language switcher on desktop */
+        .mobile-lang-switcher {
+            display: none;
+        }
+
+        .lang-btn {
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 5px 8px;
+            border-radius: 4px;
+        }
+
+        .lang-btn:hover {
+            color: #ff6b9d;
+        }
+
+        .lang-btn.active {
+            color: #ffffff;
+            background: rgba(255, 107, 157, 0.2);
+        }
+
+        .lang-separator {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 300;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, #063965 0%, #1c4b7d 50%, #3d6ba3 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="%23ffffff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.2;
+            z-index: 1;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background: url('/static/images/gallery-cover.png') center center/cover no-repeat;
+            opacity: 0.15;
+            z-index: 1;
+            animation: slowSpan 30s ease-in-out infinite alternate;
+            filter: blur(1px);
+        }
+
+        @keyframes slowSpan {
+            0% {
+                transform: scale(1) translateX(-2%) translateY(-2%);
+            }
+            25% {
+                transform: scale(1.05) translateX(1%) translateY(-1%);
+            }
+            50% {
+                transform: scale(1.03) translateX(-1%) translateY(1%);
+            }
+            75% {
+                transform: scale(1.07) translateX(2%) translateY(-0.5%);
+            }
+            100% {
+                transform: scale(1.02) translateX(-1.5%) translateY(2%);
+            }
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+            z-index: 3;
+            position: relative;
+            background: rgba(26, 76, 122, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .exhibition-tag {
+            display: inline-block;
+            background: rgba(255, 107, 157, 0.2);
+            color: #ff6b9d;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #ffffff;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .hero-description {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Call to Action Buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-btn:hover::before {
+            left: 100%;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, #ff6b9d, #ff8a80);
+            color: #ffffff;
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 107, 157, 0.6);
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .cta-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .cta-icon {
+            font-size: 20px;
+        }
+
+        /* Exhibition Information Section */
+        .exhibition-info-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .exhibition-info-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exhibition-info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, #ff6b9d, #ff8a80);
+        }
+
+        .exhibition-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f1f3f4;
+        }
+
+        .exhibition-main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #1a4c7a;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .exhibition-dates {
+            font-size: 1.3rem;
+            color: #ff6b9d;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .exhibition-venue {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .exhibition-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .detail-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #ff6b9d;
+        }
+
+        .detail-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1a4c7a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-section h3::before {
+            content: '•';
+            color: #ff6b9d;
+            font-size: 1.5rem;
+        }
+
+        .detail-section p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        .assistant-curator {
+            font-size: 0.9rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        .artworks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .artwork-item {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            color: #333;
+        }
+
+        .artwork-item strong {
+            color: #1a4c7a;
+        }
+
+        .exhibition-description {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-left: 4px solid #1a4c7a;
+        }
+
+        .exhibition-description p {
+            margin-bottom: 20px;
+            text-align: justify;
+            line-height: 1.8;
+        }
+
+        .exhibition-description p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .exhibition-info-card {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+
+            .exhibition-main-title {
+                font-size: 2.5rem;
+            }
+
+            .exhibition-details {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .detail-section {
+                padding: 20px;
+            }
+        }
+
+        /* Artworks Section */
+        .artworks-section {
+            padding: 80px 0;
+            background: #ffffff;
+            min-height: 100vh;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 60px;
+            color: #1a4c7a;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(135deg, #ff6b9d, #ff8a80);
+        }
+
+        .artwork-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .artwork-card {
+            background: #ffffff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .artwork-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #ccc;
+            overflow: hidden;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .artwork-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .artwork-card:hover .artwork-image img {
+            transform: scale(1.05);
+        }
+
+        .artwork-info {
+            padding: 25px;
+        }
+
+        .artwork-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a4c7a;
+        }
+
+        .artwork-artist {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .artwork-details {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            font-size: 0.85rem;
+        }
+
+        .artwork-details p {
+            margin: 4px 0;
+            color: #555;
+        }
+
+        .artwork-description {
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            text-align: justify;
+        }
+
+        .artwork-id {
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+            font-size: 0.8rem !important;
+            color: #1a4c7a !important;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            /* Mobile language switcher - show it on mobile */
+            .mobile-lang-switcher {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .mobile-lang-switcher .lang-btn {
+                color: rgba(255, 255, 255, 0.7);
+                cursor: pointer;
+                font-weight: 500;
+                transition: color 0.3s ease;
+                padding: 5px 8px;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+
+            .mobile-lang-switcher .lang-btn:hover {
+                color: #ff6b9d;
+            }
+
+            .mobile-lang-switcher .lang-btn.active {
+                color: #ffffff;
+                background: rgba(255, 107, 157, 0.2);
+            }
+
+            .mobile-lang-switcher .lang-separator {
+                color: rgba(255, 255, 255, 0.5);
+                font-weight: 300;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .artwork-grid {
+                grid-template-columns: 1fr;
+                padding: 0 15px;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .fade-in-up-delay {
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+    </style>
+    <title>Bir Arada Sergisi - Sanat Galerisi</title>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="navbar">
+            <a href="/" class="logo">
+                <img src="/static/images/yky-logo.png" alt="YKY Logo">
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-text" data-tr="Giriş" data-en="Home">Giriş</a></li>
+                <li><a href="#exhibition-info" class="nav-text" data-tr="Sergi Bilgileri" data-en="Exhibition Info">Sergi Bilgileri</a></li>
+                <li><a href="#artworks" class="nav-text" data-tr="Eserler" data-en="Artworks">Eserler</a></li>
+                <li class="language-switcher">
+                    <span class="lang-btn active" data-lang="tr">TR</span>
+                    <span class="lang-separator">|</span>
+                    <span class="lang-btn" data-lang="en">EN</span>
+                </li>
+            </ul>
+            <!-- Mobile language switcher -->
+            <div class="mobile-lang-switcher">
+                <span class="lang-btn active" data-lang="tr">TR</span>
+                <span class="lang-separator">|</span>
+                <span class="lang-btn" data-lang="en">EN</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="exhibition-tag fade-in-up" 
+                 data-tr="9 Mayıs 2025 - 4 Ocak 2026" 
+                 data-en="May 9, 2025 - January 4, 2026">9 Mayıs 2025 - 4 Ocak 2026</div>
+            <h1 class="hero-title fade-in-up" 
+                data-tr="Bir Arada" 
+                data-en="Together">Bir Arada</h1>
+            <h2 class="hero-subtitle fade-in-up-delay" 
+                data-tr="Yapı Kredi Galeri" 
+                data-en="Yapı Kredi Gallery">Yapı Kredi Galeri</h2>
+            <p class="hero-description fade-in-up-delay" 
+               data-tr="İkincisi gerçekleşen 'Bir Arada' sergi dizisi, odağını bu kez 90'lardan bu yana üreten ve aynı kuşağa ait İstanbullu iki sanatçıya çeviriyor: Fulya Çetin ve İlhan Sayın." 
+               data-en="The second 'Together' exhibition series focuses on two Istanbul artists from the same generation who have been producing since the 90s: Fulya Çetin and İlhan Sayın.">
+                İkincisi gerçekleşen "Bir Arada" sergi dizisi, odağını bu kez 90'lardan bu yana üreten ve aynı kuşağa ait 
+                İstanbullu iki sanatçıya çeviriyor: Fulya Çetin ve İlhan Sayın.
+            </p>
+            
+            <div class="cta-buttons fade-in-up-delay">
+                <a href="#exhibition-info" class="cta-btn cta-secondary">
+                    <i class="fas fa-info-circle cta-icon"></i>
+                    <span data-tr="Sergi Bilgileri" data-en="Exhibition Info">Sergi Bilgileri</span>
+                </a>
+                <a href="/chat?lang=tr" class="cta-btn cta-primary" id="chat-link">
+                    <i class="fas fa-comments cta-icon"></i>
+                    <span data-tr="Eserlerle Konuşun" data-en="Chat with Artworks">Eserlerle Konuşun</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exhibition Information Section -->
+    <section class="exhibition-info-section" id="exhibition-info">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="exhibition-info-card">
+                        <div class="exhibition-header">
+                            <h2 class="exhibition-main-title" 
+                                data-tr="Bir Arada" 
+                                data-en="Together">Bir Arada</h2>
+                            <div class="exhibition-dates" 
+                                 data-tr="9 Mayıs 2025 - 4 Ocak 2026" 
+                                 data-en="May 9, 2025 - January 4, 2026">9 Mayıs 2025 - 4 Ocak 2026</div>
+                            <div class="exhibition-venue" 
+                                 data-tr="Yapı Kredi Galeri, İstanbul" 
+                                 data-en="Yapı Kredi Gallery, Istanbul">Yapı Kredi Galeri, İstanbul</div>
+                            <img src="/static/images/gallery-cover.png" alt="Bir Arada Sergisi" class="img-fluid mt-4 rounded">
+                        </div>
+                                                
+                        <div class="exhibition-details">                           
+
+                            <div class="detail-section exhibition-description">
+                                <h3 data-tr="Sanatçılar" data-en="Artists">Sanatçılar</h3>
+                                <p>
+                                    Fulya Çetin
+                                    <br>İlhan Sayın
+                                </p>
+                                <h3 data-tr="Küratörler" data-en="Curators">Küratörler</h3>
+                                <p>
+                                    Didem Yazıcı
+                                    <br>Zehra Begüm Kışla
+                                </p>
+                                <h3 data-tr="Sergi Hakkında" data-en="About the Exhibition">Sergi Hakkında</h3>
+                                <p data-tr="İkincisi gerçekleşen 'Bir Arada' sergi dizisi, odağını bu kez 90'lardan bu yana üreten ve aynı kuşağa ait İstanbullu iki sanatçıya çeviriyor: Fulya Çetin ve İlhan Sayın. Kent ve doğa manzaraları, hayvan ve insan portreleri, soyutlamalar ve objelerle karşımıza çıkan sanatçılar, izleyicinin hayal gücüne alan açan açık uçlu çalışmalar üretiyor."
+                                   data-en="The second 'Together' exhibition series focuses on two Istanbul artists from the same generation who have been producing since the 90s: Fulya Çetin and İlhan Sayın. The artists, who present themselves with urban and natural landscapes, animal and human portraits, abstractions and objects, produce open-ended works that open space for the viewer's imagination.">
+                                    İkincisi gerçekleşen "Bir Arada" sergi dizisi, odağını bu kez 90'lardan bu yana üreten ve aynı kuşağa ait 
+                                    İstanbullu iki sanatçıya çeviriyor: Fulya Çetin ve İlhan Sayın. Kent ve doğa manzaraları, hayvan ve insan 
+                                    portreleri, soyutlamalar ve objelerle karşımıza çıkan sanatçılar, izleyicinin hayal gücüne alan açan açık 
+                                    uçlu çalışmalar üretiyor.
+                                </p>
+                                <p data-tr="Müşterek temalar, benzer dünya görüşleri ve uzun yıllara dayanan arkadaşlık bağları üzerinden birleşen iki sanatçı, biçimsel anlamda ayrışsa da sanatsal yaklaşımları ve işledikleri konularda buluşuyor. Ortak noktaları arasında en belirgin olanı her ikisinin de insanın doğa üzerindeki tahakkümünü düşündüren incelikli eserler üretmeleri."
+                                   data-en="The two artists, united through common themes, similar worldviews and long-standing friendship bonds, meet in their artistic approaches and the subjects they work on, even though they diverge formally. The most prominent among their common points is that both produce subtle works that make one think about human domination over nature.">
+                                    Müşterek temalar, benzer dünya görüşleri ve uzun yıllara dayanan arkadaşlık bağları üzerinden birleşen 
+                                    iki sanatçı, biçimsel anlamda ayrışsa da sanatsal yaklaşımları ve işledikleri konularda buluşuyor. 
+                                    Ortak noktaları arasında en belirgin olanı her ikisinin de insanın doğa üzerindeki tahakkümünü düşündüren 
+                                    incelikli eserler üretmeleri.
+                                </p>
+                                <p data-tr="Resim temelli ancak resimle sınırlı kalmayan bu çalışmalarında, izleyiciyi bitki ve hayvanların da özne konumunda olduğu büyülü bir dünyaya çağırıyorlar. Toplumsal cinsiyet eşitsizliği, çevresel adaletsizlikler ve sömürgecilik gibi günümüzün sosyopolitik konuları süzgeçlerinden geçirerek nazik, sade ve kendine özgü bir sanatsal dile çeviriyorlar."
+                                   data-en="In these painting-based but not limited to painting works, they invite the viewer to a magical world where plants and animals are also in the position of subjects. They filter today's sociopolitical issues such as gender inequality, environmental injustices and colonialism through their filters and translate them into a gentle, simple and unique artistic language.">
+                                    Resim temelli ancak resimle sınırlı kalmayan bu çalışmalarında, izleyiciyi bitki ve hayvanların da 
+                                    özne konumunda olduğu büyülü bir dünyaya çağırıyorlar. Toplumsal cinsiyet eşitsizliği, çevresel 
+                                    adaletsizlikler ve sömürgecilik gibi günümüzün sosyopolitik konuları süzgeçlerinden geçirerek nazik, 
+                                    sade ve kendine özgü bir sanatsal dile çeviriyorlar.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Artworks Section -->
+    <section class="artworks-section" id="artworks">
+        <div class="container">
+            <h2 class="section-title" data-tr="Sergi Eserleri" data-en="Exhibition Artworks">Sergi Eserleri</h2>
+            <div class="artwork-grid">
+                {% for artwork in artworks %}
+                <div class="artwork-card">
+                    <div class="artwork-image">
+                        <img src="{{ artwork.image_url }}" alt="{{ artwork.title }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                    </div>
+                    <div class="artwork-info">
+                        <h3 class="artwork-title" 
+                            data-tr="{{ artwork.title }}" 
+                            data-en="{{ artwork.title_en if artwork.title_en else artwork.title }}">{{ artwork.title }}</h3>
+                        <p class="artwork-artist">{{ artwork.artist }}, {{ artwork.year }} </p>
+                        <div class="artwork-details">
+                            <p><strong><span data-tr="{{ artwork.medium }}" 
+                                            data-en="{{ artwork.medium_en if artwork.medium_en else artwork.medium }}">{{ artwork.medium }}</span>, {{ artwork.dimensions }}</strong></p>
+                        </div>
+                        <p class="artwork-description" 
+                           data-tr="{{ artwork.description[:200] }}{% if artwork.description|length > 200 %}...{% endif %}" 
+                           data-en="{{ (artwork.description_en[:200] if artwork.description_en else artwork.description[:200]) }}{% if (artwork.description_en|length if artwork.description_en else artwork.description|length) > 200 %}...{% endif %}">{{ artwork.description[:200] }}{% if artwork.description|length > 200 %}...{% endif %}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Required Javascript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7HUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/static/scripts/showdown.min.js"></script>
+    
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe artwork cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const artworkCards = document.querySelectorAll('.artwork-card');
+            artworkCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+        });
+
+        // Language switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            let currentLang = '{{ lang if lang else "tr" }}';
+
+            // Function to switch language
+            function switchLanguage(targetLang) {
+                if (targetLang === currentLang) return;
+
+                // Update URL parameter and reload page
+                const currentUrl = new URL(window.location);
+                currentUrl.searchParams.set('lang', targetLang);
+                window.location.href = currentUrl.toString();
+            }
+
+            // Set active button based on current language
+            const allLangButtons = document.querySelectorAll('.lang-btn');
+            allLangButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === currentLang) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update text content based on current language
+            const elementsWithLang = document.querySelectorAll('[data-tr][data-en]');
+            elementsWithLang.forEach(element => {
+                const newText = element.getAttribute('data-' + currentLang);
+                if (newText) {
+                    element.textContent = newText;
+                }
+            });
+
+            // Update chat link with current language parameter
+            const chatLink = document.getElementById('chat-link');
+            if (chatLink) {
+                chatLink.href = '/chat?lang=' + currentLang;
+            }
+
+            // Update document language
+            document.documentElement.lang = currentLang;
+
+            // Save current language preference
+            localStorage.setItem('preferred-language', currentLang);
+
+            // Add click event listeners to language buttons (both desktop and mobile)
+            allLangButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetLang = this.getAttribute('data-lang');
+                    switchLanguage(targetLang);
+                });
+            });
+        });
+
+        // Speech and Chat functionality (placeholder - to be implemented)
+        var mode = "{{mode}}";
+        // var speechConfig = SpeechSDK.SpeechConfig.fromSubscription("{{config.speech_key}}", "{{config.speech_region}}");
+        // speechConfig.speechSynthesisLanguage = "{{config.speech_language}}";
+        // speechConfig.speechSynthesisVoiceName = "{{config.speech_voice}}";
+        // const player = new SpeechSDK.SpeakerAudioDestination();
+        // const audioConfig  = SpeechSDK.AudioConfig.fromSpeakerOutput(player);
+        // const audioConfig2  = SpeechSDK.AudioConfig.fromAudioFileOutput("output.wav");
+        // const synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig,audioConfig2);
+    </script>
+
+
+</body>
+</html>

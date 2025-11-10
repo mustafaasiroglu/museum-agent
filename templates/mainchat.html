@@ -1,0 +1,1149 @@
+﻿<!doctype html>
+<html lang="{{ lang }}">
+<head>
+    <!-- Required metadata tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Talk with TV Copilot!">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/custom.css">
+    
+    <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+
+    <style>
+
+        body {
+            background: linear-gradient(135deg, #063965 0%, #1c4b7d 50%, #3d6ba3 100%);
+            font-size: large;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="%23ffffff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.2;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            opacity: 0.15;
+            z-index: -1;
+            filter: blur(1px);
+            pointer-events: none;
+        }
+
+        @keyframes slowSpan {
+            0% {
+                transform: scale(1) translateX(-2%) translateY(-2%);
+            }
+            25% {
+                transform: scale(1.05) translateX(1%) translateY(-1%);
+            }
+            50% {
+                transform: scale(1.03) translateX(-1%) translateY(1%);
+            }
+            75% {
+                transform: scale(1.07) translateX(2%) translateY(-0.5%);
+            }
+            100% {
+                transform: scale(1.02) translateX(-1.5%) translateY(2%);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                margin-top: 30px;
+            }
+            to {
+                opacity: 1;
+                margin-top: 20px;
+            }
+        }
+       
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1.0;
+                
+            }
+            50% {
+                opacity: 1;
+                background-color: #d6ffff7a;
+            }
+        }
+
+        @keyframes animationFadeZoom {
+        0% {
+            transform: scale(0.5);
+            opacity: 0;
+        }
+        
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        }
+
+        .message_assistant {
+            background: #edf5ffe6;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin: 20px auto 20px 20px;
+            max-width: 80%;
+            width: fit-content;
+            height: fit-content;
+            animation: fadeIn 1s ease-in, pulse 2s 1 2s;
+            /* border: 1px solid #007bff; */
+            /* box-shadow: 0 0 5px 0px #0000002b; */
+        }
+        .message_user {
+            background: #a7e0ffd9;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin:20px 20px 20px auto;
+            max-width: 80%;
+            width: fit-content;
+            height: fit-content;
+            animation: fadeIn 1s ease-in;
+        }
+        .message_assistant:hover,.message_user:hover{
+            box-shadow: 0 0 5px 0px #f305052b;
+            cursor: pointer;
+        }
+
+        .message_assistant img {
+            height: 100px;
+            max-width: 100px;
+            border-radius: 10px;
+            margin: 0px 10px 10px 0px;
+        }
+        .message_assistant p span {
+            display: inline-block;
+        }
+        .ccard {
+            background: rgba(255, 255, 255, 0.781);
+            color: #007bff;
+            border: #007bff 1px solid;
+            box-shadow: 0 0 5px 0px #0000002b;
+            min-height: 40px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin: 5px;
+            animation: fadeIn 1s ease-in;
+            cursor: pointer;
+            font-size: medium;
+            width: fit-content;
+            max-width: 350px;
+            flex: none;
+            word-wrap: break-word;
+            text-align: left;
+        }
+        .ccard:hover {
+            background: #0269d6;
+            color: white
+        }
+
+        #introcards {
+            flex-direction: column !important;
+            justify-content: flex-end !important;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        /* Mobile responsive styles for suggestion cards */
+        @media (max-width: 768px) {
+            #introcards {
+                flex-direction: column !important;
+                align-items: flex-end !important;
+                justify-content: flex-end !important;
+            }
+            
+            .ccard {
+                width: fit-content !important;
+                max-width: 350px !important;
+                margin: 3px 0 !important;
+                flex: none !important;
+                margin-left: auto !important;
+                margin-right: 0 !important;
+            }
+        }
+
+        /* make scrollbar minimal */
+        ::-webkit-scrollbar {
+            width: 7px;
+            background-color: #e4e4e4aa;
+            border-radius: 15px;
+        }
+
+        
+        ::-webkit-scrollbar-thumb {
+            background-color: #93939357;
+            border-radius: 15px;
+        }
+
+        .form-control:focus {
+            border-color: #63636333;
+            box-shadow: none
+        }
+        
+        .top-right-bar {
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            padding: 20px;
+            cursor: pointer;
+            font-size: 24px;
+            opacity: 0.7;
+            color: white;
+        }
+        .top-right-bar>* {
+            margin-left: 10px;
+        }
+        #qr-scanner-icon:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+            transition: all 0.2s ease;
+        }
+        .info {
+            display: inline-block;
+            background: #ffffff75;
+            color: #809ab8;
+            padding: 5px;
+            margin: 0px 5px 5px 0px;
+            border-radius: 5px;
+            border: 1px solid #acacac;
+            font-size: x-small;
+            height: 25px;
+            width: fit-content;
+            overflow: clip;
+            max-width: -webkit-fill-available;
+        }
+        .tooltiptext {
+            display: none;
+            max-width: 400px;
+            background-color: #ffffff;
+            color: #000000;
+            border-radius: 0px;
+            border: solid 1px #5b5b5b;
+            padding: 6px;
+            position: absolute;
+            z-index: 1;
+            margin: 10px 5px;
+            overflow: hidden;
+        }
+   
+        .info:hover .tooltiptext {
+            display: block;
+        }
+
+        .imageinput {
+            display: none;
+            color: rgb(84, 84, 84);
+        }
+        .imageinput:hover {
+            display: block;
+        }
+        
+        #text-to-send {
+            border-radius: 50px;
+            padding-left: 20px;
+            padding-right: 38px;
+            height: 40px;font-size: large;
+        }
+        
+        #text-to-send:hover~.imageinput {
+            display: block;
+        }
+
+        
+        #imgpreview {
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            border-radius: 45px;
+            display: none;
+            left: -100%;
+            position: relative;
+        }
+        #imgpreview:hover {
+            filter: blur(1px) grayscale(1);
+            cursor: no-drop;
+        }
+
+        /* Modal styles */
+        .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        padding-top: 60px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: auto;
+            animation: animationFadeZoom 0.6s;
+            max-height: 80vh;
+            max-width: 80%;
+        }
+
+        .close {
+        position: absolute;
+        top: 30px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        }
+
+        /* Language Switcher Styles */
+        .lang-btn {
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 5px 3px;
+            border-radius: 4px;
+        }
+
+        .lang-btn:hover {
+            color: #ff6b9d;
+        }
+
+        .lang-btn.active {
+            color: #ffffff;
+            background: rgba(255, 107, 157, 0.2);
+        }
+
+        .lang-separator {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 300;
+        }
+    </style>
+    <title data-tr="Sergi ile Sohbet" data-en="Chat with Exhibition">Sergi ile Sohbet</title>
+</head>
+<body>
+
+    <div class="" style="padding: 20px;background-color: #063965;backdrop-filter: blur(10px);display: flex;justify-content: space-between;align-items: center;">
+        <div>
+            <a href="/"><i class="fas fa-chevron-circle-left"></i></a>
+            <a href="/chat" style="margin-left: 10px ;text-decoration: none;font-weight: 400;color: #eaeaea;">
+                <span data-tr="Eserlerle Konuşun" data-en="Chat with Artworks">Eserlerle Konuşun</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="top-right-bar" class="top-right-bar">
+        <!-- <a title="Reset conversation" style="text-decoration: none;color:#838080;" href="/"><i class="fas fa-undo"></i></a> -->
+        <div class="language-switcher" style="display: flex;align-items: center;gap: 4px;font-size: 14px; display: inline-block;vertical-align: middle;margin-top: -7px;">
+            <span class="lang-btn {% if lang == 'tr' %}active{% endif %}" data-lang="tr">TR</span>
+            <span class="lang-separator">|</span>
+            <span class="lang-btn {% if lang == 'en' %}active{% endif %}" data-lang="en">EN</span>
+        </div>
+        <i id="qr-scanner-icon" class="fas fa-qrcode" 
+           data-title-tr="QR Kod Okut" 
+           data-title-en="Scan QR Code" 
+           title="QR Kod Okut"></i>
+        <i id="volume-icon" class="fas fa-volume-up" 
+           data-title-tr="Sessize Al" 
+           data-title-en="Mute" 
+           title="Sessize Al"></i>
+    </div>
+
+    <div class="container" style="padding: 20px;">
+        <div class="row">
+            <div id="messages" style="
+                padding: 5px;
+                position: fixed;
+                bottom: 120px;
+                max-width: 800px;
+                margin: auto;
+                top: 70px;
+                overflow-y: auto;
+                right: 20px;
+                left: 20px;
+        ">
+                <div class="message_assistant">
+                    {{agent.initialmessage}}
+                </div>
+                
+            </div>
+        </div> 
+
+    </div>
+    <div style="position: absolute;bottom: 0px;right: 20px;left: 20px;">
+        <div id="introcards" style="padding: 0px;display: flex;max-width: 700px;margin: auto;">
+            {% for card in agent.sampleprompts %}
+            <div class="col ccard">{{card.prompt}}</div>
+            {% endfor %}
+        </div>
+        <div class="container" style="
+        margin: 30px auto 30px;
+        padding: 10px 15px;
+        box-shadow: 0px 5px 16px 0px #0000004a;
+        border-radius: 40px;
+        max-width: 700px;
+        background: #ffffff42;">
+            <form>
+                <div class="d-flex">
+                    <input class="form-control" 
+                    id="text-to-send" 
+                    data-placeholder-tr="Yazın ya da mikrofon kullanın..." 
+                    data-placeholder-en="Write or use microphone..." 
+                    placeholder="Yazın ya da mikrofon kullanın..." value=""/>
+                    <input type="file" id="imagefile" name="file" accept="image/*" style="display: none;">          
+                    <div class="imageinput">
+                        <span class="btn" style="margin-left: -45px;" id="image-upload-btn">
+                            <i class="fas fa-paperclip"></i>
+                        </span>
+                    </div>
+                    <div class="imagepreview" style="width: 45px;margin-right: -45px;">
+                        <img src="" id="imgpreview" >
+                        <i class="fas fa-times" style="color: red;position: absolute;margin-left: 30px;margin-top: 5px;display: none;" id="imgclose"></i>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="border-radius: 20px; margin-left: 10px;width: 42px;display: none;" id="send">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="border-radius: 20px; margin-left: 10px;width: 42px;" id="micr">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+            </form>
+        </div>  
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close">
+            <i class="fas fa-times" style="color: white;"></i>
+        </span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <!-- QR Scanner Modal -->
+    <div id="qrModal" class="modal">
+        <div class="modal-content" style="background: white; padding: 20px; border-radius: 10px; max-width: 500px; margin: 50px auto;">
+            <span class="close" id="qr-close" style="color: black; position: absolute; top: 10px; right: 15px;">
+                <i class="fas fa-times"></i>
+            </span>
+            <h3 style="color: #1a4c7a; margin-bottom: 20px; text-align: center;" 
+               data-tr="QR Kod Okutun" 
+               data-en="Scan QR Code">QR Kod Okutun</h3>
+            
+            <!-- QR Scanner Options -->
+            <div id="qr-options" style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: center;">
+                <button id="camera-option" class="btn btn-primary">
+                    <i class="fas fa-camera"></i> Kamera
+                </button>
+                <button id="file-option" class="btn btn-secondary">
+                    <i class="fas fa-upload"></i> Dosya Yükle
+                </button>
+            </div>
+
+            <!-- Camera Scanner -->
+            <div id="camera-scanner" style="display: none;">
+                <div id="qr-reader" style="width: 100%; min-height: 300px; border: 2px dashed #ccc; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                    <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>
+                    <p style="color: #666; text-align: center;">Kamerayı başlatmak için tıklayın</p>
+                    <button id="start-camera" class="btn btn-primary" style="margin-top: 10px;">Kamerayı Başlat</button>
+                </div>
+            </div>
+
+            <!-- File Upload Scanner -->
+            <div id="file-scanner" style="display: none;">
+                <div style="border: 2px dashed #ccc; border-radius: 10px; padding: 30px; text-align: center;">
+                    <i class="fas fa-upload" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>
+                    <p style="color: #666; margin-bottom: 15px;">Dosya seçiliyor...</p>
+                    <input type="file" id="qr-file-input" accept="image/*" style="display: none;">
+                </div>
+            </div>
+
+            <!-- QR Result -->
+            <div id="qr-result" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; display: none;">
+                <strong data-tr="QR Kod Sonucu:" data-en="QR Code Result:">QR Kod Sonucu:</strong>
+                <p id="qr-result-text" style="margin: 5px 0; word-break: break-all;"></p>
+                <button id="send-qr-result" class="btn btn-success btn-sm" 
+                        data-tr="Sonucu Gönder" 
+                        data-en="Send Result">Sonucu Gönder</button>
+            </div>
+        </div>
+    </div>
+    <!-- Required Javascript for this tutorial -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- QR Code Scanner Library with fallbacks -->
+    <script>
+        // Function to load QR code library with fallbacks
+        function loadQrLibrary() {
+            const sources = [
+                'https://cdn.jsdelivr.net/npm/html5-qrcode@latest/minified/html5-qrcode.min.js',
+                'https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js',
+                'https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/minified/html5-qrcode.min.js',
+                'https://unpkg.com/html5-qrcode@latest/minified/html5-qrcode.min.js'                
+            ];
+            
+            let currentIndex = 0;
+            
+            function tryLoad() {
+                if (currentIndex >= sources.length) {
+                    console.error('All QR code library sources failed to load');
+                    window.html5QrcodeLoadFailed = true;
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = sources[currentIndex];
+                
+                script.onload = function() {
+                    console.log('QR code library loaded successfully from:', sources[currentIndex]);
+                    window.html5QrcodeLoaded = true;
+                };
+                
+                script.onerror = function() {
+                    console.warn('Failed to load QR library from:', sources[currentIndex]);
+                    currentIndex++;
+                    tryLoad();
+                };
+                
+                document.head.appendChild(script);
+            }
+            
+            tryLoad();
+        }
+        
+        // Start loading the library
+        loadQrLibrary();
+    </script>
+    <script>
+        var piiEnabled = "{{pii}}";
+        var mode = "{{mode}}";
+        var speechConfig = SpeechSDK.SpeechConfig.fromSubscription("{{config.speech_key}}", "{{config.speech_region}}");
+        speechConfig.speechSynthesisLanguage = "{{config.speech_language}}";
+        speechConfig.speechSynthesisVoiceName = "{{config.speech_voice}}";
+        const player = new SpeechSDK.SpeakerAudioDestination();
+        const audioConfig  = SpeechSDK.AudioConfig.fromSpeakerOutput(player);
+        const synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig,audioConfig);
+        window.onload = function() {
+        const initialMessage = "{{agent.initialmessage}}";
+        // readTextLoudly(initialMessage);
+        
+        // Check for QR parameter and send automatic message
+        const qrValue = "{{ qr or '' }}";
+        if (qrValue && qrValue.trim() !== '') {
+            setTimeout(function() {
+                const inputField = document.getElementById('text-to-send');
+                let currentLang = '{{ lang }}';
+                const qrMessage = currentLang === 'en' ? `I am currently at the artwork with ID ${qrValue}` : `Şuanda ${qrValue} nolu eserin önündeyim`;
+
+                if (inputField) {
+                    inputField.value = qrMessage;
+                    
+                    // Trigger input event to show send button
+                    const inputEvent = new Event('input', { bubbles: true });
+                    inputField.dispatchEvent(inputEvent);
+                    
+                    // Auto-send the message
+                    setTimeout(function() {
+                        const sendButton = document.getElementById('send');
+                        if (sendButton && !sendButton.disabled) {
+                            sendButton.click();
+                        }
+                    }, 500);
+                }
+            }, 1000); // Wait 1 second after page load
+        }
+        }
+        
+    </script>
+    <script type="text/javascript" src="/static/scripts/mainstreaming.js"></script>
+    <script type="text/javascript" src="/static/scripts/showdown.min.js"></script>
+    <script>
+        // Get the modal elements
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        const closeBtn = document.querySelector(".close");
+
+        // When the close button is clicked
+        closeBtn.addEventListener('click', () => {modal.style.display = "none";});
+        modal.addEventListener('click', () => {modal.style.display = "none";});
+
+        // Utility function to wait for QR library to load
+        function waitForQrLibrary(callback, maxAttempts = 100) {
+            let attempts = 0;
+            const checkLibrary = () => {
+                if (typeof Html5Qrcode !== 'undefined' && window.html5QrcodeLoaded) {
+                    callback();
+                } else if (window.html5QrcodeLoadFailed) {
+                    const errorMessage = currentLang === 'en' ? 
+                        'QR code library could not be loaded. Please check your internet connection and refresh the page.' : 
+                        'QR kod kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.';
+                    alert(errorMessage);
+                } else if (attempts < maxAttempts) {
+                    attempts++;
+                    setTimeout(checkLibrary, 100); // Check every 100ms
+                } else {
+                    const timeoutMessage = currentLang === 'en' ? 
+                        'QR code library loading timeout. Please refresh the page.' : 
+                        'QR kod kütüphanesi yüklenirken zaman aşımı. Lütfen sayfayı yenileyin.';
+                    alert(timeoutMessage);
+                }
+            };
+            checkLibrary();
+        }
+
+        // Handle suggestion card clicks, image upload, and QR scanner
+        document.addEventListener("DOMContentLoaded", function() {
+            // Add click handlers to all suggestion cards
+            const suggestionCards = document.querySelectorAll('.ccard');
+            
+            suggestionCards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    // Get the suggestion text
+                    const suggestionText = card.textContent.trim();
+                    
+                    // Fill the input field
+                    const inputField = document.getElementById('text-to-send');
+                    inputField.value = suggestionText;
+                    
+                    // Trigger input event to show send button
+                    const inputEvent = new Event('input', { bubbles: true });
+                    inputField.dispatchEvent(inputEvent);
+                    
+                    // Wait a brief moment then trigger send button click
+                    setTimeout(function() {
+                        const sendButton = document.getElementById('send');
+                        if (sendButton && !sendButton.disabled) {
+                            sendButton.click();
+                        }
+                    }, 100);
+                });
+            });
+
+            // Handle image upload button click - single event handler
+            const imageUploadBtn = document.getElementById('image-upload-btn');
+            const imageFileInput = document.getElementById('imagefile');
+            
+            if (imageUploadBtn && imageFileInput) {
+                imageUploadBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    imageFileInput.click();
+                });
+            }
+
+            // QR Scanner functionality
+            const qrModal = document.getElementById('qrModal');
+            const qrScannerIcon = document.getElementById('qr-scanner-icon');
+            const qrClose = document.getElementById('qr-close');
+            const qrOptions = document.getElementById('qr-options');
+            const cameraOption = document.getElementById('camera-option');
+            const fileOption = document.getElementById('file-option');
+            const cameraScanner = document.getElementById('camera-scanner');
+            const fileScanner = document.getElementById('file-scanner');
+            const startCameraBtn = document.getElementById('start-camera');
+            const qrFileInput = document.getElementById('qr-file-input');
+            const qrReader = document.getElementById('qr-reader');
+            const qrResult = document.getElementById('qr-result');
+            const qrResultText = document.getElementById('qr-result-text');
+            const sendQrResult = document.getElementById('send-qr-result');
+            
+            let html5QrCode = null;
+            let qrResultValue = '';
+
+            // Open QR scanner modal - show options directly
+            qrScannerIcon.addEventListener('click', function() {
+                qrModal.style.display = 'block';
+                showQrOptions();
+            });
+
+            // Close QR scanner modal
+            qrClose.addEventListener('click', function() {
+                closeQrScanner();
+            });
+
+            // Close modal when clicking outside
+            qrModal.addEventListener('click', function(e) {
+                if (e.target === qrModal) {
+                    closeQrScanner();
+                }
+            });
+
+            // Camera option - start camera directly
+            cameraOption.addEventListener('click', function() {
+                showCameraScanner();
+                startQrScanning();
+            });
+
+            // File option - directly open file picker
+            fileOption.addEventListener('click', function() {
+                showFileScanner();
+                // Automatically trigger file picker
+                setTimeout(() => {
+                    qrFileInput.click();
+                }, 100);
+            });
+
+            // Start camera for QR scanning
+            startCameraBtn.addEventListener('click', function() {
+                startQrScanning();
+            });
+
+            // Handle file selection
+            qrFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    scanQrFromFile(file);
+                }
+            });
+
+            // Send QR result
+            sendQrResult.addEventListener('click', function() {
+                if (qrResultValue) {
+                    const inputField = document.getElementById('text-to-send');
+                    inputField.value = 'QR Kod: ' + qrResultValue;
+                    
+                    // Trigger input event to show send button
+                    const inputEvent = new Event('input', { bubbles: true });
+                    inputField.dispatchEvent(inputEvent);
+                    
+                    closeQrScanner();
+                    
+                    // Auto-send the QR result
+                    setTimeout(function() {
+                        const sendButton = document.getElementById('send');
+                        if (sendButton && !sendButton.disabled) {
+                            sendButton.click();
+                        }
+                    }, 100);
+                }
+            });
+
+            function showQrOptions() {
+                qrOptions.style.display = 'flex';
+                cameraScanner.style.display = 'none';
+                fileScanner.style.display = 'none';
+                qrResult.style.display = 'none';
+                startCameraBtn.style.display = 'block';
+                qrResultValue = '';
+            }
+
+            function resetQrScanner() {
+                showQrOptions();
+            }
+
+            function showCameraScanner() {
+                qrOptions.style.display = 'none';
+                cameraScanner.style.display = 'block';
+                fileScanner.style.display = 'none';
+            }
+
+            function showFileScanner() {
+                qrOptions.style.display = 'none';
+                cameraScanner.style.display = 'none';
+                fileScanner.style.display = 'block';
+            }
+
+            function startQrScanning() {
+                // Check if Html5Qrcode is available
+                if (typeof Html5Qrcode === 'undefined' || !window.html5QrcodeLoaded) {
+                    if (window.html5QrcodeLoadFailed) {
+                        const errorMessage = currentLang === 'en' ? 
+                            'QR code library could not be loaded. Please check your internet connection and refresh the page.' : 
+                            'QR kod kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.';
+                        alert(errorMessage);
+                        return;
+                    }
+                    // Show loading message
+                    const qrReader = document.getElementById('qr-reader');
+                    if (qrReader) {
+                        const loadingMessage = currentLang === 'en' ? 'Loading QR code library...' : 'QR kod kütüphanesi yükleniyor...';
+                        qrReader.innerHTML = `<p style="color: #666; text-align: center;">${loadingMessage}</p>`;
+                    }
+                    waitForQrLibrary(() => startQrScanning());
+                    return;
+                }
+                
+                try {
+                    html5QrCode = new Html5Qrcode("qr-reader");
+                    
+                    // Clear the initial content
+                    const qrReader = document.getElementById('qr-reader');
+                    qrReader.innerHTML = '<p style="color: #666; text-align: center;">Kameralar aranıyor...</p>';
+                    
+                    Html5Qrcode.getCameras().then(devices => {
+                        console.log('Found cameras:', devices);
+                        
+                        if (devices && devices.length) {
+                            // List all available cameras for debugging
+                            devices.forEach((device, index) => {
+                                console.log(`Camera ${index}: ${device.label} (${device.id})`);
+                            });
+                            
+                            // For PC, try different camera selection strategies
+                            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                            let cameraId;
+                            
+                            if (isMobile) {
+                                // Mobile: prefer back camera
+                                cameraId = devices.find(device => 
+                                    device.label.toLowerCase().includes('back') || 
+                                    device.label.toLowerCase().includes('rear') ||
+                                    device.label.toLowerCase().includes('environment')
+                                )?.id || devices[0].id;
+                            } else {
+                                // PC: try multiple strategies to find a working camera
+                                cameraId = devices.find(device => 
+                                    device.label.toLowerCase().includes('webcam') ||
+                                    device.label.toLowerCase().includes('camera') ||
+                                    device.label.toLowerCase().includes('usb') ||
+                                    device.label.toLowerCase().includes('integrated')
+                                )?.id || devices[0].id;
+                            }
+                            
+                            console.log('Selected camera ID:', cameraId);
+                            
+                            const config = {
+                                fps: 10,
+                                qrbox: { width: 200, height: 200 },
+                                aspectRatio: 1.0,
+                                disableFlip: false,
+                                videoConstraints: {
+                                    facingMode: isMobile ? "environment" : "user"
+                                }
+                            };
+                            
+                            const startingMessage = currentLang === 'en' ? 'Starting camera...' : 'Kamera başlatılıyor...';
+                            qrReader.innerHTML = `<p style="color: #666; text-align: center;">${startingMessage}</p>`;
+                            
+                            html5QrCode.start(
+                                cameraId,
+                                config,
+                                (decodedText, decodedResult) => {
+                                    console.log('QR Code detected:', decodedText);
+                                    
+                                    // Extract value after ?qr= if it's a URL
+                                    let extractedValue = decodedText;
+                                    if (decodedText.includes('?qr=')) {
+                                        const urlParams = new URLSearchParams(decodedText.split('?')[1]);
+                                        extractedValue = urlParams.get('qr') || decodedText;
+                                    }
+                                    
+                                    qrResultValue = extractedValue;
+                                    
+                                    // Stop scanning after successful read
+                                    html5QrCode.stop().then(() => {
+                                        console.log('QR Code scanning stopped');
+                                        closeQrScanner();
+                                        
+                        // Send message with QR code content
+                        const inputField = document.getElementById('text-to-send');
+                        const qrMessage = currentLang === 'en' ? 
+                            `I am currently in front of artwork number ${extractedValue}.` : 
+                            `Şuanda ${extractedValue} numaralı eserin karşısındayım.`;
+                        inputField.value = qrMessage;                                        // Trigger input event to show send button
+                                        const inputEvent = new Event('input', { bubbles: true });
+                                        inputField.dispatchEvent(inputEvent);
+                                        
+                                        // Auto-send the message
+                                        setTimeout(function() {
+                                            const sendButton = document.getElementById('send');
+                                            if (sendButton && !sendButton.disabled) {
+                                                sendButton.click();
+                                            }
+                                        }, 100);
+                                    }).catch(err => {
+                                        console.log('Error stopping QR scanner:', err);
+                                    });
+                                },
+                                (errorMessage) => {
+                                    // Handle scan errors silently - this is called frequently during scanning
+                                }
+                            ).then(() => {
+                                console.log('QR Code scanner started successfully');
+                                startCameraBtn.style.display = 'none';
+                            }).catch(err => {
+                                console.error('Error starting QR scanner:', err);
+                                qrReader.innerHTML = `
+                                    <div style="text-align: center; color: #666;">
+                                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #ff6b6b; margin-bottom: 10px;"></i>
+                                        <p>Kamera başlatılamadı</p>
+                                        <p style="font-size: 0.9rem;">Hata: ${err.message || 'Bilinmeyen hata'}</p>
+                                        <button id="retry-camera" class="btn btn-warning btn-sm" style="margin-top: 10px;">Tekrar Dene</button>
+                                    </div>
+                                `;
+                                
+                                // Add retry functionality
+                                document.getElementById('retry-camera').addEventListener('click', function() {
+                                    qrReader.innerHTML = `
+                                        <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>
+                                        <p style="color: #666; text-align: center;">Kamerayı başlatmak için tıklayın</p>
+                                        <button id="start-camera" class="btn btn-primary" style="margin-top: 10px;">Kamerayı Başlat</button>
+                                    `;
+                                    startCameraBtn.style.display = 'block';
+                                    // Re-attach event listener
+                                    document.getElementById('start-camera').addEventListener('click', startQrScanning);
+                                });
+                                
+                                startCameraBtn.style.display = 'block';
+                            });
+                            
+                        } else {
+                            qrReader.innerHTML = `
+                                <div style="text-align: center; color: #666;">
+                                    <i class="fas fa-camera-retro" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>
+                                    <p>Kamera bulunamadı</p>
+                                    <p style="font-size: 0.9rem;">Lütfen bir kamera bağlayın veya dosya yükleme seçeneğini kullanın</p>
+                                </div>
+                            `;
+                        }
+                    }).catch(err => {
+                        console.error('Error getting cameras:', err);
+                        qrReader.innerHTML = `
+                            <div style="text-align: center; color: #666;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #ff6b6b; margin-bottom: 10px;"></i>
+                                <p>Kamera erişimi reddedildi</p>
+                                <p style="font-size: 0.9rem;">Tarayıcı ayarlarından kamera iznini kontrol edin</p>
+                            </div>
+                        `;
+                    });
+                    
+                } catch (error) {
+                    console.error('Error initializing QR scanner:', error);
+                    const scannerErrorMessage = currentLang === 'en' ? 
+                        'QR code scanner could not be started: ' + error.message : 
+                        'QR kod tarayıcısı başlatılamadı: ' + error.message;
+                    alert(scannerErrorMessage);
+                }
+            }
+
+            function scanQrFromFile(file) {
+                // Check if Html5Qrcode is available
+                if (typeof Html5Qrcode === 'undefined' || !window.html5QrcodeLoaded) {
+                    if (window.html5QrcodeLoadFailed) {
+                        const errorMessage = currentLang === 'en' ? 
+                            'QR code library could not be loaded. Please check your internet connection and refresh the page.' : 
+                            'QR kod kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.';
+                        alert(errorMessage);
+                        return;
+                    }
+                    // Show loading message
+                    const qrReader = document.getElementById('qr-reader');
+                    if (qrReader) {
+                        const loadingMessage = currentLang === 'en' ? 'Loading QR code library...' : 'QR kod kütüphanesi yükleniyor...';
+                        qrReader.innerHTML = `<p style="color: #666; text-align: center;">${loadingMessage}</p>`;
+                    }
+                    waitForQrLibrary(() => scanQrFromFile(file));
+                    return;
+                }
+                
+                if (!html5QrCode) {
+                    html5QrCode = new Html5Qrcode("qr-reader");
+                }
+                
+                html5QrCode.scanFile(file, true)
+                    .then(decodedText => {
+                        // Extract value after ?qr= if it's a URL
+                        let extractedValue = decodedText;
+                        if (decodedText.includes('?qr=')) {
+                            const urlParams = new URLSearchParams(decodedText.split('?')[1]);
+                            extractedValue = urlParams.get('qr') || decodedText;
+                        }
+                        
+                        qrResultValue = extractedValue;
+                        closeQrScanner();
+                        
+                        // Send message with QR code content
+                        const inputField = document.getElementById('text-to-send');
+                        const qrMessage = currentLang === 'en' ? 
+                            `I am currently in front of artwork number ${extractedValue}.` : 
+                            `Şuanda ${extractedValue} numaralı eserin karşısındayım.`;
+                        inputField.value = qrMessage;
+                        
+                        // Trigger input event to show send button
+                        const inputEvent = new Event('input', { bubbles: true });
+                        inputField.dispatchEvent(inputEvent);
+                        
+                        // Auto-send the message
+                        setTimeout(function() {
+                            const sendButton = document.getElementById('send');
+                            if (sendButton && !sendButton.disabled) {
+                                sendButton.click();
+                            }
+                        }, 100);
+                    })
+                    .catch(err => {
+                        console.log('Error scanning file:', err);
+                        const alertMessage = currentLang === 'en' ? 
+                            'QR code not found. Please select an image containing a valid QR code.' : 
+                            'QR kod bulunamadı. Lütfen geçerli bir QR kod içeren görsel seçin.';
+                        alert(alertMessage);
+                    });
+            }
+
+            function closeQrScanner() {
+                if (html5QrCode) {
+                    html5QrCode.stop().then(() => {
+                        html5QrCode.clear();
+                        html5QrCode = null;
+                    }).catch(err => {
+                        console.log('Error stopping QR scanner:', err);
+                        html5QrCode = null;
+                    });
+                }
+                
+                qrModal.style.display = 'none';
+                resetQrScanner();
+            }
+
+            // Language switching functionality
+            let currentLang = '{{ lang }}';
+
+            // Function to switch language
+            function switchLanguage(targetLang) {
+                if (targetLang === currentLang) return;
+
+                // Update active button
+                const allLangButtons = document.querySelectorAll('.lang-btn');
+                allLangButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-lang') === targetLang) {
+                        btn.classList.add('active');
+                    }
+                });
+
+                // Update text content
+                const elementsWithLang = document.querySelectorAll('[data-tr][data-en]');
+                elementsWithLang.forEach(element => {
+                    const newText = element.getAttribute('data-' + targetLang);
+                    if (newText) {
+                        element.textContent = newText;
+                    }
+                });
+
+                // Update title attributes
+                const elementsWithTitle = document.querySelectorAll('[data-title-tr][data-title-en]');
+                elementsWithTitle.forEach(element => {
+                    const newTitle = element.getAttribute('data-title-' + targetLang);
+                    if (newTitle) {
+                        element.setAttribute('title', newTitle);
+                    }
+                });
+
+                // Update placeholder
+                const inputField = document.getElementById('text-to-send');
+                if (inputField) {
+                    const newPlaceholder = inputField.getAttribute('data-placeholder-' + targetLang);
+                    if (newPlaceholder) {
+                        inputField.setAttribute('placeholder', newPlaceholder);
+                    }
+                }
+
+                // Update document language and title
+                document.documentElement.lang = targetLang;
+                const titleElement = document.querySelector('title');
+                if (titleElement) {
+                    const newTitle = titleElement.getAttribute('data-' + targetLang);
+                    if (newTitle) {
+                        titleElement.textContent = newTitle;
+                    }
+                }
+
+                currentLang = targetLang;
+
+                // Save language preference and reload page with new language
+                localStorage.setItem('preferred-language', targetLang);
+                const currentUrl = new URL(window.location);
+                currentUrl.searchParams.set('lang', targetLang);
+                window.location.href = currentUrl.toString();
+            }
+
+            // Initialize page with current language
+            function initializeLanguage() {
+                // Update active button
+                const allLangButtons = document.querySelectorAll('.lang-btn');
+                allLangButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-lang') === currentLang) {
+                        btn.classList.add('active');
+                    }
+                });
+
+                // Update text content
+                const elementsWithLang = document.querySelectorAll('[data-tr][data-en]');
+                elementsWithLang.forEach(element => {
+                    const newText = element.getAttribute('data-' + currentLang);
+                    if (newText) {
+                        element.textContent = newText;
+                    }
+                });
+
+                // Update title attributes
+                const elementsWithTitle = document.querySelectorAll('[data-title-tr][data-title-en]');
+                elementsWithTitle.forEach(element => {
+                    const newTitle = element.getAttribute('data-title-' + currentLang);
+                    if (newTitle) {
+                        element.setAttribute('title', newTitle);
+                    }
+                });
+
+                // Update placeholder
+                const inputField = document.getElementById('text-to-send');
+                if (inputField) {
+                    const newPlaceholder = inputField.getAttribute('data-placeholder-' + currentLang);
+                    if (newPlaceholder) {
+                        inputField.setAttribute('placeholder', newPlaceholder);
+                    }
+                }
+
+                // Update document language and title
+                document.documentElement.lang = currentLang;
+                const titleElement = document.querySelector('title');
+                if (titleElement) {
+                    const newTitle = titleElement.getAttribute('data-' + currentLang);
+                    if (newTitle) {
+                        titleElement.textContent = newTitle;
+                    }
+                }
+            }
+
+            // Initialize page with current language
+            initializeLanguage();
+
+            // Add click event listeners to language buttons
+            const allLangButtons = document.querySelectorAll('.lang-btn');
+            allLangButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetLang = this.getAttribute('data-lang');
+                    switchLanguage(targetLang);
+                });
+            });
+        });
+
+    </script>
+
+</body>
+</html>
