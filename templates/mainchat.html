@@ -261,13 +261,16 @@
         
         #text-to-send {
             border-radius: 50px;
+            border: none;
             padding-left: 20px;
             padding-right: 38px;
             height: 40px;font-size: large;
+            margin-right: 6px;
         }
         
         #text-to-send:hover~.imageinput {
             display: block;
+            margin-left: -3px;
         }
 
         
@@ -341,12 +344,31 @@
             color: rgba(255, 255, 255, 0.5);
             font-weight: 300;
         }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: #063965;
+            backdrop-filter: blur(10px);
+            padding: 5px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: #063965a7;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
     </style>
     <title data-tr="Sergi ile Sohbet" data-en="Chat with Exhibition">Sergi ile Sohbet</title>
 </head>
 <body>
 
-    <div class="" style="padding: 20px;background-color: #063965;backdrop-filter: blur(10px);display: flex;justify-content: space-between;align-items: center;">
+    <header class="header" id="header">
+        <div class="" style="padding: 20px;background-color: #063965;backdrop-filter: blur(10px);display: flex;justify-content: space-between;align-items: center;">
         <div>
             <a href="/"><i class="fas fa-chevron-circle-left"></i></a>
             <a href="/chat" style="margin-left: 10px ;text-decoration: none;font-weight: 400;color: #eaeaea;">
@@ -371,29 +393,37 @@
            data-title-en="Mute" 
            title="Sessize Al"></i>
     </div>
+    </header>
 
-    <div class="container" style="padding: 20px;">
-        <div class="row">
-            <div id="messages" style="
-                padding: 5px;
-                position: fixed;
-                bottom: 120px;
-                max-width: 800px;
-                margin: auto;
-                top: 70px;
-                overflow-y: auto;
-                right: 20px;
-                left: 20px;
-        ">
-                <div class="message_assistant">
-                    {{agent.initialmessage}}
-                </div>
-                
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="container" style="padding: 20px;">
+                <div class="row">
+                    <div id="messages" style="
+                        padding: 5px;
+                        position: fixed;
+                        bottom: 160px;
+                        max-width: 800px;
+                        margin: auto;
+                        top: 70px;
+                        overflow-y: auto;
+                        right: 20px;
+                        left: 20px;
+                ">
+                        <div class="message_assistant">
+                            {{agent.initialmessage}}
+                        </div>
+                        
+                    </div>
+                </div> 
+
             </div>
-        </div> 
+        </div>
+    </section>
 
-    </div>
-    <div style="position: absolute;bottom: 0px;right: 20px;left: 20px;">
+    
+    <div style="position: absolute;bottom: 50px;right: 20px;left: 20px;">
         <div id="introcards" style="padding: 0px;display: flex;max-width: 700px;margin: auto;">
             {% for card in agent.sampleprompts %}
             <div class="col ccard">{{card.prompt}}</div>
@@ -407,7 +437,7 @@
         max-width: 700px;
         background: #ffffff42;">
             <form>
-                <div class="d-flex">
+                <div class="d-flex" style="gap: 3px;">
                     <input class="form-control" 
                     id="text-to-send" 
                     data-placeholder-tr="Yazın ya da mikrofon kullanın..." 
