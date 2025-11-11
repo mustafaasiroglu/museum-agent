@@ -15,7 +15,7 @@
     <style>
 
         body {
-            background: linear-gradient(135deg, #063965 0%, #1c4b7d 50%, #3d6ba3 100%);
+            /* background: linear-gradient(135deg, #063965 0%, #1c4b7d 50%, #3d6ba3 100%); */
             font-size: large;
             position: relative;
             min-height: 100vh;
@@ -370,7 +370,7 @@
     <header class="header" id="header">
         <div class="" style="padding: 20px;background-color: #063965;backdrop-filter: blur(10px);display: flex;justify-content: space-between;align-items: center;">
         <div>
-            <a href="/"><i class="fas fa-chevron-circle-left"></i></a>
+            <a href="/"><i class="fas fa-chevron-circle-left" style="color: #ff887e;"></i></a>
             <a href="/chat" style="margin-left: 10px ;text-decoration: none;font-weight: 400;color: #eaeaea;">
                 <span data-tr="Eserlerle Konuşun" data-en="Chat with Artworks">Eserlerle Konuşun</span>
             </a>
@@ -444,12 +444,12 @@
                     data-placeholder-en="Write or use microphone..." 
                     placeholder="Yazın ya da mikrofon kullanın..." value=""/>
                     <input type="file" id="imagefile" name="file" accept="image/*" style="display: none;">          
-                    <div class="imageinput">
+                    <div class="imageinput" style="display: none;">
                         <span class="btn" style="margin-left: -45px;" id="image-upload-btn">
                             <i class="fas fa-paperclip"></i>
                         </span>
                     </div>
-                    <div class="imagepreview" style="width: 45px;margin-right: -45px;">
+                    <div class="imagepreview" style="width: 45px;margin-right: -45px; display: none;">
                         <img src="" id="imgpreview" >
                         <i class="fas fa-times" style="color: red;position: absolute;margin-left: 30px;margin-top: 5px;display: none;" id="imgclose"></i>
                     </div>

@@ -59,14 +59,14 @@ def index():
         mysession['agent']['sampleprompts'] = [
             {"prompt": "Can you briefly introduce the artists?"},
             {"prompt": "Can you explain the theme of the exhibition?"},
-            {"prompt": "How many artworks are there in total?"}
+            {"prompt": "Can you provide information about artwork 2?"}
         ]
     else:
         mysession['agent']['initialmessage'] = "Merhaba, sergi hakkında size nasıl yardımcı olabilirim? QR kod okutarak hangi eserin yanında olduğunuzu bana bildirebilirsiniz."
         mysession['agent']['sampleprompts'] = [
             {"prompt": "Sanatçıları kısaca tanıtır mısın?"},
             {"prompt": "Serginin temasını açıklar mısın?"},
-            {"prompt": "Toplam kaç eser bulunuyor?"}
+            {"prompt": "2 nolu eser hakkında bilgi verebilir misin?"}
         ]
     
     mysession['chathistory'] = [{
